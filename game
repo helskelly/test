@@ -1,0 +1,70 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+int main() {
+  // The word to be guessed
+  std::string word = "programming";
+  
+  // Convert the word to lowercase
+  std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+  
+  // Prepare a vector to store the guessed letters
+  std::vector<char> guessedLetters(word.length(), '_');
+  
+  // Variables to track the number of attempts and correct guesses
+  int attempts = 6;
+  int correctGuesses = 0;
+  
+  std::cout << "Welcome to the 'Hangman' game!" << std::endl;
+  
+  do {
+    std::cout << "You have " << attempts << " attempts left." << std::endl;
+    
+    // Display the current state of guessed letters
+    for (char letter : guessedLetters) {
+      std::cout << letter << " ";
+    }
+    std::cout << std::endl;
+    
+    // Enter a guessed letter
+    char guess;
+    std::cout << "Enter a letter: ";
+    std::cin >> guess;
+    
+    // Convert the guessed letter to lowercase
+    guess = std::tolower(guess);
+    
+    // Check if the guessed letter has already been guessed before
+    auto it = std::find(guessedLetters.begin(), guessedLetters.end(), guess);
+    if (it != guessedLetters.end()) {
+      std::cout << "You have already guessed that letter. Please try another one." << std::endl;
+      continue;
+    }
+    
+    // Check if the guessed letter is in the word
+    it = std::find(word.begin(), word.end(), guess);
+    if (it != word.end()) {
+      // Update the vector of guessed letters
+      int index = std::distance(word.begin(), it);
+      guessedLetters[index] = guess;
+      correctGuesses++;
+      std::cout << "Congratulations! The letter is correct!" << std::endl;
+    } else {
+      // Decrease the number of attempts
+      attempts--;
+      std::cout << "Oops! The letter is not correct." << std::endl;
+    }
+    
+  } while (attempts > 0 && correctGuesses < word.length());
+  
+  // Display the game result
+  if (correctGuesses == word.length()) {
+    std::cout << "Congratulations! You have guessed the word '" << word << "'!" << std::endl;
+  } else {
+    std::cout << "You have run out of attempts. The word was '" << word << "'." << std::endl;
+  }
+  
+  return 0;
+}
